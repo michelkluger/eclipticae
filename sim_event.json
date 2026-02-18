@@ -1,0 +1,14 @@
+{
+  "latitude": 40.4168,
+  "longitude": -3.7038,
+  "elevation_m": 667.0,
+  "search_start_utc": "2026-01-01T00:00:00Z",
+  "event_kind": "partial",
+  "obscuration": 0.9997450257525988,
+  "peak_utc": "2026-08-12T18:32:14.793007Z",
+  "peak_altitude_deg": 7.336219406315948,
+  "partial_begin_utc": "2026-08-12T17:36:38.158027Z",
+  "partial_end_utc": "2026-08-12T19:24:21.404442Z",
+  "total_begin_utc": null,
+  "total_end_utc": null
+}
