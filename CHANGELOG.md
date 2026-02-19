@@ -15,7 +15,7 @@ and this project aims to follow [Semantic Versioning](https://semver.org/spec/v2
 ### Changed
 - Refactored CLI wizard UI helpers into `ecliptica.cli_ui`.
 - Refactored render script builders to load external templates.
-- Moved rich wizard dependencies to optional `wizard` extra.
+- Made visualization and wizard dependencies part of core installation.
 
 ## [0.1.0] - 2026-02-19
 

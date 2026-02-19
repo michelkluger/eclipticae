@@ -7,16 +7,10 @@ Thanks for your interest in improving `ecliptica`.
 1. Install dependencies:
 
 ```bash
-uv sync --dev --extra wizard
+uv sync --dev
 ```
 
-2. Optional visualization stack:
-
-```bash
-uv sync --dev --extra wizard --extra viz
-```
-
-3. Run checks before opening a PR:
+2. Run checks before opening a PR:
 
 ```bash
 uv run ruff check .

@@ -9,31 +9,13 @@
 
 - Compute the next local eclipse from a start date (`partial`, `annular`, or `total`).
 - Export eclipse metadata to JSON.
-- Render 2D map or 3D globe `.mp4` animations from exported JSON (optional `viz` extra).
+- Render 2D map or 3D globe `.mp4` animations from exported JSON.
 - Preview mode for faster iteration (`--preview`) and optional render cache control (`--disable-caching`).
 
 ## Install
 
 ```bash
 uv sync
-```
-
-Optional rendering extras:
-
-```bash
-uv sync --extra viz
-```
-
-Optional rich wizard extras (arrow-key menus in interactive terminals):
-
-```bash
-uv sync --extra wizard
-```
-
-Install both:
-
-```bash
-uv sync --extra viz --extra wizard
 ```
 
 ## CLI Usage

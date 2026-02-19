@@ -223,18 +223,12 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "astronomy-engine" },
+    { name = "manim" },
     { name = "msgspec" },
     { name = "orjson" },
-    { name = "typer" },
-]
-
-[package.optional-dependencies]
-viz = [
-    { name = "manim" },
-]
-wizard = [
     { name = "prompt-toolkit" },
     { name = "questionary" },
+    { name = "typer" },
 ]
 
 [package.dev-dependencies]
@@ -248,14 +242,13 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "astronomy-engine", specifier = ">=2.1.19" },
-    { name = "manim", marker = "extra == 'viz'", specifier = ">=0.19.2" },
+    { name = "manim", specifier = ">=0.19.2" },
     { name = "msgspec", specifier = ">=0.20.0" },
     { name = "orjson", specifier = ">=3.11.7" },
-    { name = "prompt-toolkit", marker = "extra == 'wizard'", specifier = ">=3.0.0" },
-    { name = "questionary", marker = "extra == 'wizard'", specifier = ">=2.1.1" },
+    { name = "prompt-toolkit", specifier = ">=3.0.0" },
+    { name = "questionary", specifier = ">=2.1.1" },
     { name = "typer", specifier = ">=0.24.0" },
 ]
-provides-extras = ["viz", "wizard"]
 
 [package.metadata.requires-dev]
 dev = [
