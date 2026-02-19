@@ -38,3 +38,19 @@ def test_lookup_eclipse_with_saros_includes_anchor_cycle() -> None:
         raise AssertionError
     if anchor["eclipse"]["eclipse_id"] != match["eclipse_id"]:
         raise AssertionError
+
+
+def test_lookup_eclipse_with_saros_rejects_empty_name_query() -> None:
+    """Lookup should fail fast when name query is empty or whitespace."""
+    try:
+        lookup_eclipse_with_saros(
+            year=_CATALOG_YEAR,
+            name="   ",
+            saros_span=1,
+            window_days=60,
+        )
+    except ValueError as exc:
+        if "cannot be empty" not in str(exc):
+            raise AssertionError from exc
+        return
+    raise AssertionError

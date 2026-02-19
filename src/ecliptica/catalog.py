@@ -156,8 +156,10 @@ def _select_best_match(
     query_name: str,
 ) -> GlobalEclipseRecord:
     normalized_query = _normalize(query_name)
-    if normalized_query == "":
-        return events[0]
+    if not normalized_query:
+        available = ", ".join(event.name for event in events)
+        msg = f"Eclipse name query cannot be empty. Try one of: {available}"
+        raise ValueError(msg)
 
     ranked = sorted(
         ((_match_score(event, normalized_query), event) for event in events),

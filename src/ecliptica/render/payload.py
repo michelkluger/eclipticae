@@ -509,5 +509,5 @@ def _downsample_segment(segment: list[list[float]], *, stride: int = 3) -> list[
 
 def _normalize_antimeridian_lon(lon: float) -> float:
     if abs(abs(lon) - _DEGREES_WRAP) < _ANTIMERIDIAN_TOLERANCE:
-        return _DEGREES_WRAP
+        return math.copysign(_DEGREES_WRAP, lon)
     return lon
