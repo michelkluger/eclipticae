@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.11"
 resolution-markers = [
     "python_full_version >= '3.13'",
@@ -225,13 +225,16 @@ dependencies = [
     { name = "astronomy-engine" },
     { name = "msgspec" },
     { name = "orjson" },
-    { name = "questionary" },
     { name = "typer" },
 ]
 
 [package.optional-dependencies]
 viz = [
     { name = "manim" },
+]
+wizard = [
+    { name = "prompt-toolkit" },
+    { name = "questionary" },
 ]
 
 [package.dev-dependencies]
@@ -248,10 +251,11 @@ requires-dist = [
     { name = "manim", marker = "extra == 'viz'", specifier = ">=0.19.2" },
     { name = "msgspec", specifier = ">=0.20.0" },
     { name = "orjson", specifier = ">=3.11.7" },
-    { name = "questionary", specifier = ">=2.1.1" },
+    { name = "prompt-toolkit", marker = "extra == 'wizard'", specifier = ">=3.0.0" },
+    { name = "questionary", marker = "extra == 'wizard'", specifier = ">=2.1.1" },
     { name = "typer", specifier = ">=0.24.0" },
 ]
-provides-extras = ["viz"]
+provides-extras = ["viz", "wizard"]
 
 [package.metadata.requires-dev]
 dev = [

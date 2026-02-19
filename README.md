@@ -2,6 +2,9 @@
 
 `ecliptica` is a Python library + CLI to compute local solar eclipse circumstances and render eclipse animations with Manim.
 
+[![CI](https://github.com/michelkluger/ecliptica/actions/workflows/ci.yml/badge.svg)](https://github.com/michelkluger/ecliptica/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 ## MVP Features
 
 - Compute the next local eclipse from a start date (`partial`, `annular`, or `total`).
@@ -19,6 +22,18 @@ Optional rendering extras:
 
 ```bash
 uv sync --extra viz
+```
+
+Optional rich wizard extras (arrow-key menus in interactive terminals):
+
+```bash
+uv sync --extra wizard
+```
+
+Install both:
+
+```bash
+uv sync --extra viz --extra wizard
 ```
 
 ## CLI Usage
@@ -113,3 +128,10 @@ Run all checks at once (PowerShell):
 ```powershell
 .\scripts\check_all.ps1
 ```
+
+## Project Docs
+
+- [Contributing](CONTRIBUTING.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Security Policy](SECURITY.md)
+- [Changelog](CHANGELOG.md)
