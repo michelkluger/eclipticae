@@ -1,9 +1,8 @@
-﻿# ruff: noqa: Q001
 """Render scene template source."""
 
 from __future__ import annotations
 
-TEMPLATE = '''from __future__ import annotations
+TEMPLATE = """from __future__ import annotations
 
 import bisect
 import json
@@ -641,5 +640,4 @@ def _event_color(kind: str) -> str:
     if kind == "partial":
         return "#f5d04f"
     return "#c95cff"
-'''
-
+"""
