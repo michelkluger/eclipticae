@@ -21,10 +21,8 @@ from datetime import datetime
 
 from manim import (
     BLACK,
-    BLUE_E,
     DOWN,
     FadeIn,
-    GREEN_C,
     LEFT,
     ORANGE,
     RIGHT,
@@ -44,7 +42,6 @@ from manim import (
     VGroup,
     VMobject,
     ValueTracker,
-    Write,
     always_redraw,
     linear,
     smooth,
@@ -59,6 +56,7 @@ class WorldMapScene(MovingCameraScene):
         event = payload["event"]
         samples = payload.get("samples", [])
         coastline_segments = payload.get("coastline_segments", [])
+        land_polygons = payload.get("land_polygons", [])
         if not samples:
             raise RuntimeError("Map scene requires precomputed samples.")
 
@@ -102,27 +100,49 @@ class WorldMapScene(MovingCameraScene):
                     else right["shadow_hits_earth"]
                 ),
                 "shadow_miss_km": _lerp(left["shadow_miss_km"], right["shadow_miss_km"], alpha),
+                "penumbra_radius_km": _lerp(
+                    left["penumbra_radius_km"],
+                    right["penumbra_radius_km"],
+                    alpha,
+                ),
+                "core_radius_km": _lerp(left["core_radius_km"], right["core_radius_km"], alpha),
+                "core_kind": left["core_kind"] if alpha < 0.5 else right["core_kind"],
             }
 
         focus = sample_at(peak_seconds)
         focus_point = lon_lat_to_point(focus["shadow_lon"], focus["shadow_lat"])
+        event_color = _event_color(event.get("event_kind", "unknown"))
 
         stars = _build_starfield()
         map_backlight = Rectangle(
             width=map_width + 0.4,
             height=map_height + 0.4,
             stroke_width=0.0,
-            fill_color="#0f2d52",
-            fill_opacity=0.16,
-        )
+            fill_color="#143b5c",
+            fill_opacity=0.18,
+        ).set_z_index(2)
         map_panel = Rectangle(
             width=map_width,
             height=map_height,
-            stroke_color="#a8c1dd",
-            stroke_width=1.3,
-            fill_color=BLUE_E,
-            fill_opacity=0.5,
-        )
+            stroke_color="#9eb9cd",
+            stroke_width=1.15,
+            fill_color="#0b2438",
+            fill_opacity=1.0,
+        ).set_z_index(3)
+        water_top_light = Rectangle(
+            width=map_width,
+            height=map_height * 0.56,
+            stroke_width=0.0,
+            fill_color="#2f6d94",
+            fill_opacity=0.24,
+        ).align_to(map_panel, UP).set_z_index(4)
+        water_bottom_depth = Rectangle(
+            width=map_width,
+            height=map_height * 0.62,
+            stroke_width=0.0,
+            fill_color="#05131f",
+            fill_opacity=0.36,
+        ).align_to(map_panel, DOWN).set_z_index(4)
 
         grid = VGroup()
         for lon in range(-150, 180, 30):
@@ -130,8 +150,9 @@ class WorldMapScene(MovingCameraScene):
                 Line(
                     lon_lat_to_point(lon, -90),
                     lon_lat_to_point(lon, 90),
-                    stroke_width=0.55,
-                    color="#2a4f74",
+                    stroke_width=0.38,
+                    stroke_opacity=0.24,
+                    color="#89a9c0",
                 )
             )
         for lat in range(-60, 90, 30):
@@ -139,43 +160,110 @@ class WorldMapScene(MovingCameraScene):
                 Line(
                     lon_lat_to_point(-180, lat),
                     lon_lat_to_point(180, lat),
-                    stroke_width=0.55,
-                    color="#2a4f74",
+                    stroke_width=0.38,
+                    stroke_opacity=0.24,
+                    color="#89a9c0",
                 )
             )
+        grid.set_z_index(7)
+        map_labels = _build_map_labels(lon_lat_to_point)
+        map_labels.set_z_index(10)
 
+        land = VGroup()
+        for polygon in land_polygons:
+            if len(polygon) < 3:
+                continue
+            points = [lon_lat_to_point(lon, lat) for lon, lat in polygon]
+            continent = Polygon(
+                *points,
+                stroke_width=0.0,
+                fill_color="#476f4c",
+                fill_opacity=0.88,
+            )
+            land.add(continent)
+        land.set_z_index(5)
+
+        coastlines_halo = VGroup()
         coastlines = VGroup()
         for segment in coastline_segments:
             if len(segment) < 2:
                 continue
             points = [lon_lat_to_point(lon, lat) for lon, lat in segment]
-            line = VMobject(stroke_color="#8aa2b9", stroke_width=1.0)
+            halo = VMobject(stroke_color="#071522", stroke_width=2.5, stroke_opacity=0.62)
+            halo.set_points_as_corners(points)
+            coastlines_halo.add(halo)
+            line = VMobject(stroke_color="#d7e8dc", stroke_width=0.82, stroke_opacity=0.92)
             line.set_points_as_corners(points)
             coastlines.add(line)
-
-        sun_track = _build_track(
-            samples, "sun_lon", "sun_lat", lon_lat_to_point, color="#ffb347", stroke_width=2.0
-        )
-        shadow_track = _build_track(
+        coastlines_halo.set_z_index(8)
+        coastlines.set_z_index(9)
+        subsolar_track = _build_track(
+            samples,
+            "sun_lon",
+            "sun_lat",
+            lon_lat_to_point,
+            color="#ffb347",
+            stroke_width=0.7,
+            stroke_opacity=0.72,
+        ).set_z_index(30)
+        centerline_track = _build_track(
             samples,
             "shadow_lon",
             "shadow_lat",
             lon_lat_to_point,
-            color="#dce5f2",
-            stroke_width=1.6,
-        )
+            color=event_color,
+            stroke_width=1.35,
+            stroke_opacity=0.95,
+        ).set_z_index(31)
+        penumbra_north_track = _build_track(
+            samples,
+            "penumbra_north_lon",
+            "penumbra_north_lat",
+            lon_lat_to_point,
+            color="#d9e5f4",
+            stroke_width=0.76,
+            stroke_opacity=0.62,
+        ).set_z_index(29)
+        penumbra_south_track = _build_track(
+            samples,
+            "penumbra_south_lon",
+            "penumbra_south_lat",
+            lon_lat_to_point,
+            color="#d9e5f4",
+            stroke_width=0.76,
+            stroke_opacity=0.62,
+        ).set_z_index(29)
+        core_north_track = _build_track(
+            samples,
+            "core_north_lon",
+            "core_north_lat",
+            lon_lat_to_point,
+            color="#f4f8ff",
+            stroke_width=0.94,
+            stroke_opacity=0.82,
+        ).set_z_index(30)
+        core_south_track = _build_track(
+            samples,
+            "core_south_lon",
+            "core_south_lat",
+            lon_lat_to_point,
+            color="#f4f8ff",
+            stroke_width=0.94,
+            stroke_opacity=0.82,
+        ).set_z_index(30)
 
         tracker = ValueTracker(0.0)
         night_overlay = always_redraw(
             lambda: _build_night_overlay(sample_at(tracker.get_value()), lon_lat_to_point)
         )
+        night_overlay.set_z_index(6)
         sun_glow = always_redraw(
             lambda: Circle(
                 radius=0.22,
                 stroke_width=0.0,
                 fill_color="#ffb347",
                 fill_opacity=0.2,
-            ).move_to(
+            ).set_z_index(41).move_to(
                 lon_lat_to_point(
                     sample_at(tracker.get_value())["sun_lon"],
                     sample_at(tracker.get_value())["sun_lat"],
@@ -190,10 +278,10 @@ class WorldMapScene(MovingCameraScene):
                 ),
                 radius=0.075,
                 color=ORANGE,
-            )
+            ).set_z_index(43)
         )
         shadow_group = always_redraw(
-            lambda: _build_shadow_group(
+            lambda: _build_eclipse_regions(
                 sample_at(tracker.get_value()),
                 lon_lat_to_point,
                 map_width,
@@ -201,76 +289,106 @@ class WorldMapScene(MovingCameraScene):
             )
         )
 
-        title = Text("Ecliptica", font_size=52).to_edge(UP).shift(DOWN * 0.05)
-        subtitle = Text(
-            event["event_kind"].title() + " eclipse shadow map",
-            font_size=28,
-        ).next_to(title, DOWN, buff=0.14)
         metric = Text(
             "obscuration " + str(round(float(event["obscuration"]), 3)),
             font_size=22,
             color="#a8c1dd",
-        ).next_to(subtitle, DOWN, buff=0.08)
+        ).to_corner(UR).shift((LEFT * 0.2) + (DOWN * 0.1))
+        duration_text = Text(
+            _duration_label(event),
+            font_size=20,
+            color="#c0d3e4",
+        ).next_to(metric, DOWN, buff=0.08).align_to(metric, RIGHT)
 
+        observer_color = "#ff4fb3"
         observer = Dot(
             lon_lat_to_point(event["longitude"], event["latitude"]),
             radius=0.052,
-            color=GREEN_C,
-        )
-        observer_label = Text("observer", font_size=20, color=GREEN_C).next_to(
+            color=observer_color,
+        ).set_z_index(44)
+        observer_label = Text("observer", font_size=20, color=observer_color).next_to(
             observer, UP, buff=0.1
-        )
+        ).set_z_index(44)
         time_text = always_redraw(
             lambda: Text(
                 "UTC " + _format_utc(sample_at(tracker.get_value())["utc"]),
                 font_size=23,
                 color="#dce5f2",
-            ).to_corner(RIGHT + DOWN).shift(UP * 0.05)
+            ).to_corner(RIGHT + DOWN).shift(UP * 0.05).set_z_index(60)
         )
         status_text = always_redraw(
             lambda: Text(
                 _status(sample_at(tracker.get_value())),
                 font_size=21,
                 color="#dce5f2",
-            ).to_corner(UR).shift(DOWN * 0.65)
+            ).to_corner(UR).shift(DOWN * 0.65).set_z_index(60)
         )
         legend = VGroup(
-            Dot(radius=0.05, color=ORANGE),
-            Text("subsolar", font_size=19),
-            Dot(radius=0.05, color=WHITE),
-            Text("shadow axis", font_size=19),
-            Dot(radius=0.05, color=GREEN_C),
-            Text("observer", font_size=19),
-        ).arrange(RIGHT, buff=0.16).to_corner(UL).shift(DOWN * 0.62)
+            _legend_entry(event_color, "centerline"),
+            _legend_entry("#d9e5f4", "penumbra limits"),
+            _legend_entry("#f4f8ff", "core limits"),
+            _legend_entry("#ffb347", "subsolar"),
+            _legend_entry(observer_color, "observer"),
+        ).arrange(DOWN, aligned_edge=LEFT, buff=0.06).to_corner(UL).shift(
+            DOWN * 0.6,
+        ).set_z_index(60)
+        kind_legend = VGroup(
+            _legend_entry(_event_color("total"), "total"),
+            _legend_entry(_event_color("annular"), "annular"),
+            _legend_entry(_event_color("partial"), "partial"),
+            _legend_entry(_event_color("unknown"), "hybrid/unknown"),
+        ).arrange(RIGHT, buff=0.18).to_edge(DOWN).shift(UP * 0.24).set_z_index(60)
 
         map_static = VGroup(
             map_backlight,
             map_panel,
+            water_top_light,
+            water_bottom_depth,
+            land,
             night_overlay,
             grid,
+            map_labels,
+            coastlines_halo,
             coastlines,
-            sun_track,
-            shadow_track,
+            penumbra_north_track,
+            penumbra_south_track,
+            core_north_track,
+            core_south_track,
+            subsolar_track,
+            centerline_track,
         )
 
         self.camera.frame.set(width=14.2)
         self.play(FadeIn(stars, run_time=0.9))
-        self.play(Write(title), FadeIn(subtitle, shift=DOWN * 0.18), FadeIn(metric))
+        self.play(
+            FadeIn(metric),
+            FadeIn(duration_text),
+        )
         self.play(
             LaggedStart(
                 FadeIn(map_backlight),
                 Create(map_panel),
+                FadeIn(water_top_light),
+                FadeIn(water_bottom_depth),
+                FadeIn(land),
                 FadeIn(night_overlay),
                 FadeIn(grid),
+                FadeIn(map_labels),
+                FadeIn(coastlines_halo),
                 FadeIn(coastlines),
-                Create(sun_track),
-                Create(shadow_track),
+                Create(penumbra_north_track),
+                Create(penumbra_south_track),
+                Create(core_north_track),
+                Create(core_south_track),
+                Create(subsolar_track),
+                Create(centerline_track),
                 lag_ratio=0.11,
             )
         )
         self.play(FadeIn(observer), FadeIn(observer_label))
         self.play(FadeIn(sun_glow), FadeIn(sun_dot), FadeIn(shadow_group))
-        self.play(FadeIn(time_text), FadeIn(status_text), FadeIn(legend))
+        self.bring_to_front(sun_glow, shadow_group, sun_dot, observer, observer_label)
+        self.play(FadeIn(time_text), FadeIn(status_text), FadeIn(legend), FadeIn(kind_legend))
 
         first_stop = max(duration * 0.58, peak_seconds)
         self.play(
@@ -305,7 +423,16 @@ def _build_starfield() -> VGroup:
     return stars
 
 
-def _build_track(samples, lon_key, lat_key, lon_lat_to_point, *, color, stroke_width):
+def _build_track(
+    samples,
+    lon_key,
+    lat_key,
+    lon_lat_to_point,
+    *,
+    color,
+    stroke_width,
+    stroke_opacity=1.0,
+):
     segments = VGroup()
     current_points = []
     previous_lon = None
@@ -314,17 +441,51 @@ def _build_track(samples, lon_key, lat_key, lon_lat_to_point, *, color, stroke_w
         lat = float(sample[lat_key])
         if previous_lon is not None and abs(lon - previous_lon) > 170.0:
             if len(current_points) >= 2:
-                curve = VMobject(stroke_color=color, stroke_width=stroke_width)
+                curve = VMobject(
+                    stroke_color=color,
+                    stroke_width=stroke_width,
+                    stroke_opacity=stroke_opacity,
+                )
                 curve.set_points_as_corners(current_points)
                 segments.add(curve)
             current_points = []
         current_points.append(lon_lat_to_point(lon, lat))
         previous_lon = lon
     if len(current_points) >= 2:
-        curve = VMobject(stroke_color=color, stroke_width=stroke_width)
+        curve = VMobject(
+            stroke_color=color,
+            stroke_width=stroke_width,
+            stroke_opacity=stroke_opacity,
+        )
         curve.set_points_as_corners(current_points)
         segments.add(curve)
     return segments
+
+
+def _build_map_labels(lon_lat_to_point):
+    labels = VGroup()
+    for lon in range(-120, 181, 60):
+        label_text = str(abs(lon)) + ("W" if lon < 0 else ("E" if lon > 0 else ""))
+        if lon == 0:
+            label_text = "0"
+        label = Text(label_text, font_size=14, color="#92aac0")
+        label.move_to(lon_lat_to_point(lon, -84))
+        labels.add(label)
+    for lat in (-60, -30, 0, 30, 60):
+        label_text = str(abs(lat)) + ("S" if lat < 0 else ("N" if lat > 0 else ""))
+        if lat == 0:
+            label_text = "0"
+        label = Text(label_text, font_size=14, color="#92aac0")
+        label.move_to(lon_lat_to_point(-171, lat))
+        labels.add(label)
+    return labels
+
+
+def _legend_entry(color: str, text: str):
+    return VGroup(
+        Line(LEFT * 0.2, RIGHT * 0.2, stroke_color=color, stroke_width=2.2),
+        Text(text, font_size=17, color="#dce5f2"),
+    ).arrange(RIGHT, buff=0.12)
 
 
 def _build_night_overlay(sample, lon_lat_to_point):
@@ -374,42 +535,51 @@ def _solar_cosine(lat_deg, lon_deg, sun_lat_deg, sun_lon_deg):
     )
 
 
-def _build_shadow_group(sample, lon_lat_to_point, map_width: float, seconds: float):
+def _build_eclipse_regions(sample, lon_lat_to_point, map_width: float, seconds: float):
     center = lon_lat_to_point(sample["shadow_lon"], sample["shadow_lat"])
-    units_per_degree = map_width / 360.0
-    pulse = 0.72 + (0.28 * (0.5 + 0.5 * math.sin(seconds * 0.11)))
+    km_to_units = map_width / 40075.0
+    penumbra_radius = max(float(sample["penumbra_radius_km"]) * km_to_units, 0.06)
+    core_radius = max(float(sample["core_radius_km"]) * km_to_units, 0.02)
+
     penumbra = Circle(
-        radius=14.5 * units_per_degree * pulse,
-        stroke_width=1.0,
-        stroke_color="#dce5f2",
-        fill_color="#dce5f2",
-        fill_opacity=0.16,
-    ).move_to(center)
-    core = Circle(
-        radius=6.1 * units_per_degree,
-        stroke_width=0.0,
-        fill_color="#ffffff",
-        fill_opacity=0.09,
-    ).move_to(center)
-    group = VGroup(penumbra, core)
-    if sample["shadow_hits_earth"]:
+        radius=penumbra_radius,
+        stroke_width=1.4,
+        stroke_color="#e6ecf5",
+        stroke_opacity=0.62,
+        fill_color="#d7dfee",
+        fill_opacity=0.2,
+    ).move_to(center).set_z_index(40)
+    penumbra_edge = Circle(
+        radius=penumbra_radius,
+        stroke_width=0.9,
+        stroke_color="#f2f5fb",
+        stroke_opacity=0.9,
+        fill_opacity=0.0,
+    ).move_to(center).set_z_index(41)
+
+    group = VGroup(penumbra, penumbra_edge)
+    core_kind = sample.get("core_kind", "umbra")
+    if core_kind == "umbra":
         group.add(
             Circle(
-                radius=4.6 * units_per_degree,
-                stroke_width=0.9,
+                radius=core_radius,
+                stroke_width=1.0,
                 stroke_color="#ffffff",
-                fill_color="#ffffff",
-                fill_opacity=0.3,
-            ).move_to(center)
+                stroke_opacity=0.95,
+                fill_color="#0c1424",
+                fill_opacity=0.62,
+            ).move_to(center).set_z_index(42)
         )
     else:
         group.add(
             Circle(
-                radius=4.8 * units_per_degree,
-                stroke_width=1.2,
-                stroke_color="#ffffff",
-                fill_opacity=0.0,
-            ).move_to(center)
+                radius=core_radius,
+                stroke_width=1.3,
+                stroke_color="#fff1cc",
+                stroke_opacity=0.9,
+                fill_color="#fff1cc",
+                fill_opacity=0.13,
+            ).move_to(center).set_z_index(42)
         )
     return group
 
@@ -433,12 +603,51 @@ def _clamp(value: float, low: float, high: float) -> float:
 
 
 def _status(sample) -> str:
+    core_label = "umbra" if sample.get("core_kind") == "umbra" else "antumbra"
     if sample["shadow_hits_earth"]:
-        return "shadow axis intersects Earth"
-    return "axis misses Earth by " + str(round(float(sample["shadow_miss_km"]), 1)) + " km"
+        return core_label + " axis intersects Earth"
+    return (
+        core_label
+        + " axis misses Earth by "
+        + str(round(float(sample["shadow_miss_km"]), 1))
+        + " km"
+    )
+
+
+def _duration_label(event) -> str:
+    partial_minutes = _duration_minutes(
+        event.get("partial_begin_utc"),
+        event.get("partial_end_utc"),
+    )
+    total_minutes = _duration_minutes(
+        event.get("total_begin_utc"),
+        event.get("total_end_utc"),
+    )
+    partial_text = "partial " + str(round(partial_minutes, 1)) + " min"
+    if total_minutes > 0.0:
+        return partial_text + " | core " + str(round(total_minutes, 1)) + " min"
+    return partial_text + " | core 0.0 min"
+
+
+def _duration_minutes(start_raw, end_raw) -> float:
+    if not start_raw or not end_raw:
+        return 0.0
+    start = _parse_utc(start_raw)
+    end = _parse_utc(end_raw)
+    return max((end - start).total_seconds() / 60.0, 0.0)
 
 
 def _format_utc(raw: str) -> str:
     return _parse_utc(raw).strftime("%Y-%m-%d %H:%M:%S")
+
+
+def _event_color(kind: str) -> str:
+    if kind == "total":
+        return "#ff4b4b"
+    if kind == "annular":
+        return "#4c74ff"
+    if kind == "partial":
+        return "#f5d04f"
+    return "#c95cff"
 """
     return template.replace("__PAYLOAD_PATH__", payload_path.as_posix())

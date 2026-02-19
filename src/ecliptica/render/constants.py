@@ -12,9 +12,12 @@ QUALITY_SHORTCUT = {
     "4k": "k",
 }
 
+SUPPORTED_STYLES = {"classic", "realistic"}
+
 SUPPORTED_SCENES = {
     "map": "WorldMapScene",
     "globe": "GlobeShadowScene",
+    "saros": "SarosMapScene",
 }
 
 EARTH_RADIUS_KM = 6378.137
@@ -23,4 +26,10 @@ EARTH_RADIUS_AU = EARTH_RADIUS_KM / AU_KM
 
 COASTLINE_ASSET_PATH = (
     Path(__file__).resolve().parent.parent / "assets" / "ne_110m_coastline.geojson"
+)
+LAND_ASSET_PATH = Path(__file__).resolve().parent.parent / "assets" / "ne_110m_land.geojson"
+COUNTRY_BORDER_ASSET_PATH = (
+    Path(__file__).resolve().parent.parent
+    / "assets"
+    / "ne_110m_admin_0_boundary_lines_land.geojson"
 )

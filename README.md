@@ -47,6 +47,37 @@ Render 3D globe scene:
 uv run ecliptica render --input event.json --out eclipse_globe.mp4 --quality high --scene globe
 ```
 
+Render a multi-year Saros-style sequence with dimmed historical traces:
+
+```bash
+uv run ecliptica render-saros --year 2021 --name total --years 20 --out saros_paths.mp4 --quality high
+```
+
+Lookup a global eclipse by year/name and include a combined Saros chain:
+
+```bash
+uv run ecliptica lookup --year 2026 --name annular --out eclipse_lookup.json
+```
+
+Use the interactive wizard to build commands step-by-step:
+
+```bash
+uv run ecliptica wizard
+```
+
+Wizard highlights:
+- Arrow-key menus in interactive terminals.
+- Render from an existing event JSON or pick upcoming eclipses from a chosen year.
+- For `render-saros`, choose the anchor eclipse from that year (no manual anchor-name typing).
+- Adaptive defaults: low quality recommends preview mode and prefers faster renderer options.
+- Global wizard setting for caching default, so you don't need to answer that every run.
+- Back navigation inside wizard: choose `Back` in menus or use `Esc`/`Ctrl+C`.
+- Outputs exact command(s) and can run them immediately.
+
+Renderer note:
+- `opengl` is currently supported for `--scene globe` renders.
+- `map` and `render-saros` use `cairo`.
+
 ## Python Usage
 
 ```python
