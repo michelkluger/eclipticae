@@ -60,11 +60,10 @@ def build_scene_payload(
     scene: str,
     *,
     preview: bool = False,
-    style: str = "classic",
 ) -> dict[str, Any]:
     """Create the JSON payload consumed by generated Manim scene scripts."""
     options = _PREVIEW_PAYLOAD_OPTIONS if preview else _DEFAULT_PAYLOAD_OPTIONS
-    payload: dict[str, Any] = {"event": event.to_dict(), "scene": scene, "style": style}
+    payload: dict[str, Any] = {"event": event.to_dict(), "scene": scene}
     if scene in {"map", "globe"}:
         start, end = _event_bounds(event)
         payload["samples"] = _build_map_samples(start, end, options=options)
