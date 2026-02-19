@@ -82,6 +82,7 @@ class _WizardSettings:
 class _WizardBackError(Exception):
     """Raised when the user requests to navigate back in wizard flow."""
 
+
 app = typer.Typer(
     add_completion=False,
     no_args_is_help=False,
@@ -609,9 +610,7 @@ def _wizard_edit_settings(settings: _WizardSettings) -> _WizardSettings:
     _save_wizard_settings(updated)
     status_text = "disabled" if updated.disable_caching else "enabled"
     status_detail = (
-        "clean deterministic rerenders"
-        if updated.disable_caching
-        else "faster, recommended"
+        "clean deterministic rerenders" if updated.disable_caching else "faster, recommended"
     )
     typer.echo(f"Saved wizard settings: Caching ({status_text}) - {status_detail}.")
     typer.echo("")
@@ -803,9 +802,7 @@ def _ui_float(
 
 def _use_rich_wizard() -> bool:
     return bool(
-        questionary_module is not None
-        and sys.stdin.isatty()
-        and sys.stdout.isatty(),
+        questionary_module is not None and sys.stdin.isatty() and sys.stdout.isatty(),
     )
 
 
