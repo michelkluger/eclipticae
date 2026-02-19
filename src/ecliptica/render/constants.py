@@ -12,8 +12,6 @@ QUALITY_SHORTCUT = {
     "4k": "k",
 }
 
-SUPPORTED_STYLES = {"classic", "realistic"}
-
 SUPPORTED_SCENES = {
     "map": "WorldMapScene",
     "globe": "GlobeShadowScene",

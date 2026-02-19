@@ -32,7 +32,7 @@ def render_scene(  # noqa: PLR0913
 ) -> Path:
     """Render a scene and write the resulting MP4 to ``output_path``."""
     if importlib.util.find_spec("manim") is None:
-        msg = "Manim is not installed. Install visualization extras with `uv sync --extra viz`."
+        msg = "Manim is not installed. Install project dependencies with `uv sync`."
         raise RuntimeError(msg)
 
     quality_code, fps_override, resolution_override = _resolve_quality_profile(quality)
@@ -97,7 +97,7 @@ def render_saros_scene(  # noqa: PLR0913
 ) -> Path:
     """Render a multi-year Saros-style path animation scene."""
     if importlib.util.find_spec("manim") is None:
-        msg = "Manim is not installed. Install visualization extras with `uv sync --extra viz`."
+        msg = "Manim is not installed. Install project dependencies with `uv sync`."
         raise RuntimeError(msg)
 
     quality_code, fps_override, resolution_override = _resolve_quality_profile(quality)
