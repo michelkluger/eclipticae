@@ -18,6 +18,13 @@
 uv sync
 ```
 
+Linux prerequisite packages for Manim (needed before `uv sync`):
+
+```bash
+sudo apt-get update
+sudo apt-get install -y pkg-config libcairo2-dev libpango1.0-dev ffmpeg
+```
+
 ## CLI Usage
 
 Compute an event:

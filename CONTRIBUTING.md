@@ -10,6 +10,13 @@ Thanks for your interest in improving `ecliptica`.
 uv sync --dev
 ```
 
+On Ubuntu/Linux, install Manim native prerequisites first:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y pkg-config libcairo2-dev libpango1.0-dev ffmpeg
+```
+
 2. Run checks before opening a PR:
 
 ```bash
