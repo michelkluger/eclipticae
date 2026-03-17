@@ -46,7 +46,7 @@ uv run pytest
 3. GitHub Actions will run `.github/workflows/release.yml` and publish to PyPI.
 
 PyPI Trusted Publishing setup (one-time in PyPI project settings):
-- Add a Trusted Publisher for this GitHub repo (`michelkluger/ecliptica`).
+- Add a Trusted Publisher for this GitHub repo (`michelkluger/eclipticae`).
 - Workflow file: `release.yml`.
 - Environment: `pypi`.
 - No `PYPI_API_TOKEN` secret is needed after Trusted Publishing is configured.

@@ -244,7 +244,7 @@ def test_wizard_generates_render_command_text() -> None:
         if call.args and isinstance(call.args[0], str)
     ]
     expected = (
-        "ecliptica render --input sim_event.json --out preview.mp4 --renderer opengl "
+        "eclipticae render --input sim_event.json --out preview.mp4 --renderer opengl "
         "--quality low --scene globe --preview"
     )
     if expected not in rendered_lines:
@@ -277,7 +277,7 @@ def test_wizard_lookup_skips_out_flag_when_empty() -> None:
         for call in echo_mock.call_args_list
         if call.args and isinstance(call.args[0], str)
     ]
-    matches = [line for line in rendered_lines if line.startswith("ecliptica lookup ")]
+    matches = [line for line in rendered_lines if line.startswith("eclipticae lookup ")]
     if len(matches) != 1:
         raise AssertionError
     if "--out" in matches[0]:
@@ -320,9 +320,9 @@ def test_wizard_render_from_catalog_emits_compute_and_render() -> None:
         for call in echo_mock.call_args_list
         if call.args and isinstance(call.args[0], str)
     ]
-    if not any(line.startswith("  1. ecliptica compute ") for line in rendered_lines):
+    if not any(line.startswith("  1. eclipticae compute ") for line in rendered_lines):
         raise AssertionError
-    if not any(line.startswith("  2. ecliptica render ") for line in rendered_lines):
+    if not any(line.startswith("  2. eclipticae render ") for line in rendered_lines):
         raise AssertionError
     if not any("--renderer cairo" in line for line in rendered_lines):
         raise AssertionError
@@ -362,7 +362,7 @@ def test_wizard_render_saros_uses_selected_anchor_event() -> None:
         if call.args and isinstance(call.args[0], str)
     ]
     expected = (
-        "ecliptica render-saros --year 2026 --name "
+        "eclipticae render-saros --year 2026 --name "
         "'2026-08-12 Total Solar Eclipse' --out saros2.mp4 --years 200 "
         "--renderer cairo --quality low --preview"
     )
