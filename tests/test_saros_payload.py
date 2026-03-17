@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from ecliptica.render.saros_payload import build_saros_scene_payload
+from eclipticae.render.saros_payload import build_saros_scene_payload
 
 _SAROS_YEAR = 2026
 _MIN_PATH_POINTS = 2

@@ -7,8 +7,8 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
 
-from ecliptica.models import EclipseEvent
-from ecliptica.render.api import (
+from eclipticae.models import EclipseEvent
+from eclipticae.render.api import (
     _resolve_quality_profile,
     _run_manim,
     render_saros_scene,
@@ -25,7 +25,7 @@ def test_run_manim_respects_preview_and_caching_flags() -> None:
         captured_argv.extend(argv)
         return SimpleNamespace(returncode=0)
 
-    with patch("ecliptica.render.api.subprocess.run", side_effect=fake_subprocess_run):
+    with patch("eclipticae.render.api.subprocess.run", side_effect=fake_subprocess_run):
         _run_manim(
             Path("dummy_scene.py"),
             scene_name="map",
@@ -61,7 +61,7 @@ def test_run_manim_keeps_caching_enabled_by_default() -> None:
         captured_argv.extend(argv)
         return SimpleNamespace(returncode=0)
 
-    with patch("ecliptica.render.api.subprocess.run", side_effect=fake_subprocess_run):
+    with patch("eclipticae.render.api.subprocess.run", side_effect=fake_subprocess_run):
         _run_manim(
             Path("dummy_scene.py"),
             scene_name="globe",
@@ -87,7 +87,7 @@ def test_run_manim_supports_saros_scene_name() -> None:
         captured_argv.extend(argv)
         return SimpleNamespace(returncode=0)
 
-    with patch("ecliptica.render.api.subprocess.run", side_effect=fake_subprocess_run):
+    with patch("eclipticae.render.api.subprocess.run", side_effect=fake_subprocess_run):
         _run_manim(
             Path("dummy_scene.py"),
             scene_name="saros",
@@ -111,7 +111,7 @@ def test_run_manim_raises_on_nonzero_exit() -> None:
         del argv, check
         return SimpleNamespace(returncode=7)
 
-    with patch("ecliptica.render.api.subprocess.run", side_effect=fake_subprocess_run):
+    with patch("eclipticae.render.api.subprocess.run", side_effect=fake_subprocess_run):
         try:
             _run_manim(
                 Path("dummy_scene.py"),
@@ -133,7 +133,7 @@ def test_run_manim_raises_on_nonzero_exit() -> None:
 def test_render_scene_rejects_opengl_for_map() -> None:
     """Map scene should reject OpenGL with a clear early error."""
     event = _sample_event()
-    with patch("ecliptica.render.api.importlib.util.find_spec", return_value=object()):
+    with patch("eclipticae.render.api.importlib.util.find_spec", return_value=object()):
         try:
             render_scene(
                 event,
@@ -151,7 +151,7 @@ def test_render_scene_rejects_opengl_for_map() -> None:
 
 def test_render_saros_rejects_opengl() -> None:
     """Saros scene should reject OpenGL with a clear early error."""
-    with patch("ecliptica.render.api.importlib.util.find_spec", return_value=object()):
+    with patch("eclipticae.render.api.importlib.util.find_spec", return_value=object()):
         try:
             render_saros_scene(
                 year=2026,

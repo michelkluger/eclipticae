@@ -5,9 +5,9 @@ from __future__ import annotations
 import ast
 from pathlib import Path
 
-from ecliptica.render.constants import SUPPORTED_SCENES
-from ecliptica.render.script_builders import build_manim_script
-from ecliptica.render.template_loader import load_template
+from eclipticae.render.constants import SUPPORTED_SCENES
+from eclipticae.render.script_builders import build_manim_script
+from eclipticae.render.template_loader import load_template
 
 _PAYLOAD_PATH = Path("scene_payload.json")
 

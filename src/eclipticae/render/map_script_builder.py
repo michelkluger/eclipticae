@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ecliptica.render.template_loader import load_template
+from eclipticae.render.template_loader import load_template
 
 if TYPE_CHECKING:
     from pathlib import Path

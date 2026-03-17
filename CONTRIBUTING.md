@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for your interest in improving `ecliptica`.
+Thanks for your interest in improving `eclipticae`.
 
 ## Development Setup
 

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from ecliptica.catalog import list_global_solar_eclipses, lookup_eclipse_with_saros
+from eclipticae.catalog import list_global_solar_eclipses, lookup_eclipse_with_saros
 
 _CATALOG_YEAR = 2026
 _SAROS_CYCLE_ENTRY_COUNT = 3

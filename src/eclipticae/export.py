@@ -7,7 +7,7 @@ from pathlib import Path
 import msgspec
 import orjson
 
-from ecliptica.models import EclipseEvent
+from eclipticae.models import EclipseEvent
 
 
 def save_event(event: EclipseEvent, output_path: str | Path) -> Path:

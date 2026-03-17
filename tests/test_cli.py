@@ -10,10 +10,10 @@ from unittest.mock import patch
 
 import orjson
 
-from ecliptica.catalog import GlobalEclipseRecord
-from ecliptica.cli import _catalog_event_detail, _WizardBackError, main
-from ecliptica.export import save_event
-from ecliptica.models import EclipseEvent
+from eclipticae.catalog import GlobalEclipseRecord
+from eclipticae.cli import _catalog_event_detail, _WizardBackError, main
+from eclipticae.export import save_event
+from eclipticae.models import EclipseEvent
 
 _EXPECTED_PLAN_CALLS = 2
 
@@ -45,7 +45,7 @@ def test_compute_command_writes_json() -> None:
 
 def test_main_without_args_runs_wizard() -> None:
     """No-arg invocation should default to the interactive wizard."""
-    with patch("ecliptica.cli.wizard_command") as wizard_mock:
+    with patch("eclipticae.cli.wizard_command") as wizard_mock:
         exit_code = main([])
 
     if exit_code != 0:
@@ -98,7 +98,7 @@ def test_render_command_dispatches_to_renderer() -> None:
         output_path = temp_path / "map.mp4"
         save_event(event, input_path)
 
-        with patch("ecliptica.cli.render_scene", side_effect=fake_render):
+        with patch("eclipticae.cli.render_scene", side_effect=fake_render):
             exit_code = main(
                 [
                     "render",
@@ -138,7 +138,7 @@ def test_lookup_command_writes_json_output() -> None:
     }
     with TemporaryDirectory() as temp_dir:
         output_path = Path(temp_dir) / "lookup.json"
-        with patch("ecliptica.cli.lookup_eclipse_with_saros", return_value=fake_payload):
+        with patch("eclipticae.cli.lookup_eclipse_with_saros", return_value=fake_payload):
             exit_code = main(
                 [
                     "lookup",
@@ -185,7 +185,7 @@ def test_render_saros_command_dispatches_to_renderer() -> None:
 
     with TemporaryDirectory() as temp_dir:
         output_path = Path(temp_dir) / "saros.mp4"
-        with patch("ecliptica.cli.render_saros_scene", side_effect=fake_render_saros):
+        with patch("eclipticae.cli.render_saros_scene", side_effect=fake_render_saros):
             exit_code = main(
                 [
                     "render-saros",
@@ -221,17 +221,17 @@ def test_wizard_generates_render_command_text() -> None:
     """Wizard should emit a runnable render command from guided prompts."""
     with (
         patch(
-            "ecliptica.cli._load_wizard_settings",
+            "eclipticae.cli._load_wizard_settings",
             return_value=SimpleNamespace(disable_caching=False),
         ),
         patch(
-            "ecliptica.cli._ui_select",
+            "eclipticae.cli._ui_select",
             side_effect=["render", "json_file", "globe", "low", "opengl"],
         ),
-        patch("ecliptica.cli._select_event_json_path", return_value="sim_event.json"),
-        patch("ecliptica.cli._ui_text", side_effect=["preview.mp4"]),
-        patch("ecliptica.cli._ui_confirm", side_effect=[False]) as confirm_mock,
-        patch("ecliptica.cli.typer.echo") as echo_mock,
+        patch("eclipticae.cli._select_event_json_path", return_value="sim_event.json"),
+        patch("eclipticae.cli._ui_text", side_effect=["preview.mp4"]),
+        patch("eclipticae.cli._ui_confirm", side_effect=[False]) as confirm_mock,
+        patch("eclipticae.cli.typer.echo") as echo_mock,
     ):
         exit_code = main(["wizard"])
 
@@ -258,14 +258,14 @@ def test_wizard_lookup_skips_out_flag_when_empty() -> None:
     """Wizard lookup command should omit --out when user leaves it blank."""
     with (
         patch(
-            "ecliptica.cli._load_wizard_settings",
+            "eclipticae.cli._load_wizard_settings",
             return_value=SimpleNamespace(disable_caching=False),
         ),
-        patch("ecliptica.cli._ui_select", side_effect=["lookup"]),
-        patch("ecliptica.cli._ui_int", side_effect=[2026, 2, 45]),
-        patch("ecliptica.cli._ui_text", side_effect=["annular", ""]),
-        patch("ecliptica.cli._ui_confirm", side_effect=[False]),
-        patch("ecliptica.cli.typer.echo") as echo_mock,
+        patch("eclipticae.cli._ui_select", side_effect=["lookup"]),
+        patch("eclipticae.cli._ui_int", side_effect=[2026, 2, 45]),
+        patch("eclipticae.cli._ui_text", side_effect=["annular", ""]),
+        patch("eclipticae.cli._ui_confirm", side_effect=[False]),
+        patch("eclipticae.cli.typer.echo") as echo_mock,
     ):
         exit_code = main(["wizard"])
 
@@ -298,17 +298,17 @@ def test_wizard_render_from_catalog_emits_compute_and_render() -> None:
     )
     with (
         patch(
-            "ecliptica.cli._load_wizard_settings",
+            "eclipticae.cli._load_wizard_settings",
             return_value=SimpleNamespace(disable_caching=False),
         ),
         patch(
-            "ecliptica.cli._ui_select",
+            "eclipticae.cli._ui_select",
             side_effect=["render", "catalog_year", "map", "low"],
         ),
-        patch("ecliptica.cli._select_catalog_event", return_value=event),
-        patch("ecliptica.cli._ui_text", side_effect=["catalog_event.json", "map.mp4"]),
-        patch("ecliptica.cli._ui_confirm", side_effect=[False]),
-        patch("ecliptica.cli.typer.echo") as echo_mock,
+        patch("eclipticae.cli._select_catalog_event", return_value=event),
+        patch("eclipticae.cli._ui_text", side_effect=["catalog_event.json", "map.mp4"]),
+        patch("eclipticae.cli._ui_confirm", side_effect=[False]),
+        patch("eclipticae.cli.typer.echo") as echo_mock,
     ):
         exit_code = main(["wizard"])
 
@@ -342,15 +342,15 @@ def test_wizard_render_saros_uses_selected_anchor_event() -> None:
     )
     with (
         patch(
-            "ecliptica.cli._load_wizard_settings",
+            "eclipticae.cli._load_wizard_settings",
             return_value=SimpleNamespace(disable_caching=False),
         ),
-        patch("ecliptica.cli._ui_select", side_effect=["render-saros", "low"]),
-        patch("ecliptica.cli._select_anchor_event_for_saros", return_value=anchor),
-        patch("ecliptica.cli._ui_text", side_effect=["saros2.mp4"]),
-        patch("ecliptica.cli._ui_int", side_effect=[200]),
-        patch("ecliptica.cli._ui_confirm", side_effect=[False]),
-        patch("ecliptica.cli.typer.echo") as echo_mock,
+        patch("eclipticae.cli._ui_select", side_effect=["render-saros", "low"]),
+        patch("eclipticae.cli._select_anchor_event_for_saros", return_value=anchor),
+        patch("eclipticae.cli._ui_text", side_effect=["saros2.mp4"]),
+        patch("eclipticae.cli._ui_int", side_effect=[200]),
+        patch("eclipticae.cli._ui_confirm", side_effect=[False]),
+        patch("eclipticae.cli.typer.echo") as echo_mock,
     ):
         exit_code = main(["wizard"])
 
@@ -391,18 +391,18 @@ def test_wizard_back_returns_to_task_menu() -> None:
     """Back from a task plan should return to task selection without exiting wizard."""
     with (
         patch(
-            "ecliptica.cli._load_wizard_settings",
+            "eclipticae.cli._load_wizard_settings",
             return_value=SimpleNamespace(disable_caching=False),
         ),
-        patch("ecliptica.cli._ui_select", side_effect=["render", "lookup"]),
+        patch("eclipticae.cli._ui_select", side_effect=["render", "lookup"]),
         patch(
-            "ecliptica.cli._plan_for_task",
+            "eclipticae.cli._plan_for_task",
             side_effect=[
                 _WizardBackError(),
                 SimpleNamespace(commands=[["lookup", "--year", "2026"]]),
             ],
         ) as plan_mock,
-        patch("ecliptica.cli._ui_confirm", side_effect=[False]),
+        patch("eclipticae.cli._ui_confirm", side_effect=[False]),
     ):
         exit_code = main(["wizard"])
 

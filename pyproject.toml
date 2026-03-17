@@ -40,14 +40,11 @@ Issues = "https://github.com/michelkluger/ecliptica/issues"
 Changelog = "https://github.com/michelkluger/ecliptica/blob/main/CHANGELOG.md"
 
 [project.scripts]
-ecliptica = "ecliptica.cli:main"
+ecliptica = "eclipticae.cli:main"
 
 [build-system]
 requires = ["uv_build>=0.8.3,<0.9.0"]
 build-backend = "uv_build"
-
-[tool.uv-build]
-module-name = "ecliptica"
 
 [dependency-groups]
 dev = [

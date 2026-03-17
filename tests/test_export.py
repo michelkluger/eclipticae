@@ -6,8 +6,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from ecliptica.export import load_event, save_event
-from ecliptica.models import EclipseEvent
+from eclipticae.export import load_event, save_event
+from eclipticae.models import EclipseEvent
 
 
 def test_save_and_load_event_roundtrip() -> None:
