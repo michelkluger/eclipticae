@@ -336,7 +336,7 @@ def _choose_task_and_settings(
 
 
 def _show_plan_commands(plan: _WizardPlan) -> None:
-    rendered_commands = [_shell_join(["ecliptica", *args]) for args in plan.commands]
+    rendered_commands = [_shell_join(["eclipticae", *args]) for args in plan.commands]
     typer.echo("")
     if len(rendered_commands) == 1:
         typer.echo("Generated command:")
@@ -780,7 +780,7 @@ def main(argv: list[str] | None = None) -> int:
     """Run the eclipticae CLI."""
     cli_args = list(argv) if argv is not None else None
     try:
-        app(args=cli_args, prog_name="ecliptica", standalone_mode=False)
+        app(args=cli_args, prog_name="eclipticae", standalone_mode=False)
     except click.ClickException as exc:
         exc.show(file=sys.stderr)
         return exc.exit_code

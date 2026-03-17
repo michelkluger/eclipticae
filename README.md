@@ -1,11 +1,11 @@
-# ecliptica
+# eclipticae
 
 <img width="1617" height="854" alt="image" src="https://github.com/user-attachments/assets/4335f81b-c1d2-458e-81fb-b5c3cf1a2571" />
 
 
 `eclipticae` is a Python library + CLI to compute local solar eclipse circumstances and render eclipse animations with Manim.
 
-[![CI](https://github.com/michelkluger/ecliptica/actions/workflows/ci.yml/badge.svg)](https://github.com/michelkluger/ecliptica/actions/workflows/ci.yml)
+[![CI](https://github.com/michelkluger/eclipticae/actions/workflows/ci.yml/badge.svg)](https://github.com/michelkluger/eclipticae/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ## MVP Features
