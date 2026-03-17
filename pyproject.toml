@@ -1,5 +1,5 @@
 [project]
-name = "ecliptica"
+name = "eclipticae"
 version = "0.1.0"
 description = "Compute and animate local solar eclipse circumstances."
 readme = "README.md"
