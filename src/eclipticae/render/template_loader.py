@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from ecliptica.render.templates.globe_template import TEMPLATE as GLOBE_TEMPLATE
-from ecliptica.render.templates.map_template import TEMPLATE as MAP_TEMPLATE
-from ecliptica.render.templates.saros_template import TEMPLATE as SAROS_TEMPLATE
+from eclipticae.render.templates.globe_template import TEMPLATE as GLOBE_TEMPLATE
+from eclipticae.render.templates.map_template import TEMPLATE as MAP_TEMPLATE
+from eclipticae.render.templates.saros_template import TEMPLATE as SAROS_TEMPLATE
 
 _TEMPLATES = {
     "map_scene.py.tmpl": MAP_TEMPLATE,

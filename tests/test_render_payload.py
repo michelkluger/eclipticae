@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
-from ecliptica.models import EclipseEvent
-from ecliptica.render.payload import build_scene_payload
+from eclipticae.models import EclipseEvent
+from eclipticae.render.payload import build_scene_payload
 
 _MIN_SAMPLE_COUNT = 2
 

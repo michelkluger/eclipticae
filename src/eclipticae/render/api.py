@@ -11,13 +11,13 @@ import tempfile
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from ecliptica.render.constants import QUALITY_SHORTCUT, SUPPORTED_SCENES
-from ecliptica.render.payload import build_scene_payload
-from ecliptica.render.saros_payload import build_saros_scene_payload
-from ecliptica.render.script_builders import build_manim_script
+from eclipticae.render.constants import QUALITY_SHORTCUT, SUPPORTED_SCENES
+from eclipticae.render.payload import build_scene_payload
+from eclipticae.render.saros_payload import build_saros_scene_payload
+from eclipticae.render.script_builders import build_manim_script
 
 if TYPE_CHECKING:
-    from ecliptica.models import EclipseEvent
+    from eclipticae.models import EclipseEvent
 
 
 def render_scene(  # noqa: PLR0913

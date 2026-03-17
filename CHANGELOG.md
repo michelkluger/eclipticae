@@ -13,7 +13,7 @@ and this project aims to follow [Semantic Versioning](https://semver.org/spec/v2
 - CI matrix and release workflow.
 
 ### Changed
-- Refactored CLI wizard UI helpers into `ecliptica.cli_ui`.
+- Refactored CLI wizard UI helpers into `eclipticae.cli_ui`.
 - Refactored render script builders to load external templates.
 - Made visualization and wizard dependencies part of core installation.
 - Updated CI and setup docs to install Linux Manim system prerequisites.
@@ -21,4 +21,4 @@ and this project aims to follow [Semantic Versioning](https://semver.org/spec/v2
 ## [0.1.0] - 2026-02-19
 
 ### Added
-- Initial public release of `ecliptica`.
+- Initial public release of `eclipticae`.

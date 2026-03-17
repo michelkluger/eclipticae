@@ -1,4 +1,4 @@
-"""Command-line entry points for ecliptica."""
+"""Command-line entry points for eclipticae."""
 
 from __future__ import annotations
 
@@ -16,12 +16,12 @@ import click
 import orjson
 import typer
 
-from ecliptica.catalog import (
+from eclipticae.catalog import (
     GlobalEclipseRecord,
     list_global_solar_eclipses,
     lookup_eclipse_with_saros,
 )
-from ecliptica.cli_ui import (
+from eclipticae.cli_ui import (
     _MenuOption,
     _ui_confirm,
     _ui_float,
@@ -30,9 +30,9 @@ from ecliptica.cli_ui import (
     _ui_text,
     _WizardBackError,
 )
-from ecliptica.compute import compute_site_eclipse
-from ecliptica.export import load_event, save_event
-from ecliptica.render import render_saros_scene, render_scene
+from eclipticae.compute import compute_site_eclipse
+from eclipticae.export import load_event, save_event
+from eclipticae.render import render_saros_scene, render_scene
 
 QualityName = Literal[
     "very-low",
@@ -56,7 +56,7 @@ _CATALOG_SOURCE = "catalog_year"
 _JSON_SOURCE = "json_file"
 _DEFAULT_UPCOMING_COUNT = 8
 _WIZARD_SETTINGS_KEY = "__wizard_settings__"
-_WIZARD_SETTINGS_PATH = Path.home() / ".ecliptica" / "wizard_settings.json"
+_WIZARD_SETTINGS_PATH = Path.home() / ".eclipticae" / "wizard_settings.json"
 _SETTINGS_CACHING_KEY = "__settings_caching__"
 
 
@@ -115,7 +115,7 @@ def compute_command(
 def render_command(  # noqa: PLR0913
     input_path: Annotated[
         str,
-        typer.Option("--input", help="Input event JSON produced by `ecliptica compute`."),
+        typer.Option("--input", help="Input event JSON produced by `eclipticae compute`."),
     ],
     out: Annotated[str, typer.Option("--out", help="Destination mp4 path.")],
     quality: Annotated[
@@ -777,7 +777,7 @@ def _shell_join(parts: list[str]) -> str:
 
 
 def main(argv: list[str] | None = None) -> int:
-    """Run the ecliptica CLI."""
+    """Run the eclipticae CLI."""
     cli_args = list(argv) if argv is not None else None
     try:
         app(args=cli_args, prog_name="ecliptica", standalone_mode=False)

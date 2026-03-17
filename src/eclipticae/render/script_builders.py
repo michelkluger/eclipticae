@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ecliptica.render.globe_script_builder import build_globe_script
-from ecliptica.render.map_script_builder import build_map_script
-from ecliptica.render.saros_script_builder import build_saros_script
+from eclipticae.render.globe_script_builder import build_globe_script
+from eclipticae.render.map_script_builder import build_map_script
+from eclipticae.render.saros_script_builder import build_saros_script
 
 if TYPE_CHECKING:
     from pathlib import Path

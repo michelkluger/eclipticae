@@ -5,8 +5,8 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 from typing import Any
 
-from ecliptica.catalog import list_global_solar_eclipses, lookup_eclipse_with_saros
-from ecliptica.render.payload import build_shadow_samples_between, load_cartography
+from eclipticae.catalog import list_global_solar_eclipses, lookup_eclipse_with_saros
+from eclipticae.render.payload import build_shadow_samples_between, load_cartography
 
 _SAROS_PERIOD_DAYS = 6585.321667
 _SECONDS_PER_DAY = 86400.0

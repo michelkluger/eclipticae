@@ -7,7 +7,7 @@ from datetime import UTC, date, datetime, timedelta
 from astronomy import EclipseEvent as AstronomyEclipseEvent
 from astronomy import EclipseKind, Observer, SearchLocalSolarEclipse, Time
 
-from ecliptica.models import EclipseEvent, EclipseKindName, TimelinePoint
+from eclipticae.models import EclipseEvent, EclipseKindName, TimelinePoint
 
 
 def compute_site_eclipse(

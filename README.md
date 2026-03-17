@@ -3,7 +3,7 @@
 <img width="1617" height="854" alt="image" src="https://github.com/user-attachments/assets/4335f81b-c1d2-458e-81fb-b5c3cf1a2571" />
 
 
-`ecliptica` is a Python library + CLI to compute local solar eclipse circumstances and render eclipse animations with Manim.
+`eclipticae` is a Python library + CLI to compute local solar eclipse circumstances and render eclipse animations with Manim.
 
 [![CI](https://github.com/michelkluger/ecliptica/actions/workflows/ci.yml/badge.svg)](https://github.com/michelkluger/ecliptica/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -33,43 +33,43 @@ sudo apt-get install -y pkg-config libcairo2-dev libpango1.0-dev ffmpeg
 Compute an event:
 
 ```bash
-uv run ecliptica compute --lat 40.4168 --lon -3.7038 --date 2026-01-01 --out event.json
+uv run eclipticae compute --lat 40.4168 --lon -3.7038 --date 2026-01-01 --out event.json
 ```
 
 Render world map shadow video (default scene):
 
 ```bash
-uv run ecliptica render --input event.json --out eclipse_map.mp4 --quality high
+uv run eclipticae render --input event.json --out eclipse_map.mp4 --quality high
 ```
 
 Render fast preview while iterating on visuals:
 
 ```bash
-uv run ecliptica render --input event.json --out eclipse_preview.mp4 --scene map --preview --quality low
+uv run eclipticae render --input event.json --out eclipse_preview.mp4 --scene map --preview --quality low
 ```
 
 Render 3D globe scene:
 
 ```bash
-uv run ecliptica render --input event.json --out eclipse_globe.mp4 --quality high --scene globe
+uv run eclipticae render --input event.json --out eclipse_globe.mp4 --quality high --scene globe
 ```
 
 Render a multi-year Saros-style sequence with dimmed historical traces:
 
 ```bash
-uv run ecliptica render-saros --year 2021 --name total --years 20 --out saros_paths.mp4 --quality high
+uv run eclipticae render-saros --year 2021 --name total --years 20 --out saros_paths.mp4 --quality high
 ```
 
 Lookup a global eclipse by year/name and include a combined Saros chain:
 
 ```bash
-uv run ecliptica lookup --year 2026 --name annular --out eclipse_lookup.json
+uv run eclipticae lookup --year 2026 --name annular --out eclipse_lookup.json
 ```
 
 Use the interactive wizard to build commands step-by-step:
 
 ```bash
-uv run ecliptica wizard
+uv run eclipticae wizard
 ```
 
 Wizard highlights:
@@ -88,7 +88,7 @@ Renderer note:
 ## Python Usage
 
 ```python
-from ecliptica import compute_site_eclipse, render_scene, save_event
+from eclipticae import compute_site_eclipse, render_scene, save_event
 
 event = compute_site_eclipse(
     latitude=40.4168,

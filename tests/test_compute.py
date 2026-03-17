@@ -5,8 +5,8 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from itertools import pairwise
 
-from ecliptica.compute import build_timeline, compute_site_eclipse
-from ecliptica.models import EclipseEvent
+from eclipticae.compute import build_timeline, compute_site_eclipse
+from eclipticae.models import EclipseEvent
 
 _MIN_TIMELINE_POINTS = 2
 

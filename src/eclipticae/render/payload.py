@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING, Any
 
 from astronomy import Body, GeoMoon, GeoVector, SiderealTime, Time, Vector
 
-from ecliptica.render.constants import (
+from eclipticae.render.constants import (
     AU_KM,
     COASTLINE_ASSET_PATH,
     COUNTRY_BORDER_ASSET_PATH,
@@ -22,7 +22,7 @@ from ecliptica.render.constants import (
 )
 
 if TYPE_CHECKING:
-    from ecliptica.models import EclipseEvent
+    from eclipticae.models import EclipseEvent
 
 _DEGREES_WRAP = 180.0
 _MIN_LINE_POINTS = 2
